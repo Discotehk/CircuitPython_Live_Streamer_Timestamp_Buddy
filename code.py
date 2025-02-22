@@ -13,9 +13,9 @@ from adafruit_display_text import label
 #  Time setup
 start = 0
 start_time = time.time()
-hour = (time.time() - start_time) // 3600
-minute = (time.time() - start_time) // 60 % 60
-second = (time.time() - start_time) % 60
+hour = "0{}".format((time.time() - start_time) // 3600)
+minute = "0{}".format((time.time() - start_time) // 60 % 60)
+second = "0{}".format((time.time() - start_time) % 60)
 timestamp = 0
 
 #  Display setup
@@ -44,10 +44,10 @@ text_label1 = label.Label(font, text=text1, scale=3)
 text_label2 = label.Label(font, text=text2, scale=3)
 
 # set label position on the display
-text_label1.anchor_point = (0.5, 0.5)
-text_label1.anchored_position = (64, 16)
-text_label2.anchor_point = (0.5, 0.5)
-text_label2.anchored_position = (64, 48)
+text_label1.anchor_point = (1, 0.5)
+text_label1.anchored_position = (128, 16)
+text_label2.anchor_point = (1, 0.5)
+text_label2.anchored_position = (128, 48)
 
 # add label to group that is showing on display
 main_group.append(text_label1)
@@ -70,6 +70,24 @@ switch4 = DigitalInOut(board.GP21)
 switch4.switch_to_input(pull=digitalio.Pull.UP)
 deb_switch4 = Debouncer(switch4)
 
+def timeupdate():
+    global hour
+    global minute
+    global second
+    if (time.time() - start_time) // 3600 <= 9:
+        hour = "0{}".format((time.time() - start_time) // 3600)
+    else:
+        hour = (time.time() - start_time) // 3600
+    if (time.time() - start_time) // 60 % 60 <= 0:
+        minute = "0{}".format((time.time() - start_time) // 60 % 60)
+    else:
+        minute = (time.time() - start_time) // 60 % 60
+        
+    if (time.time() - start_time) % 60 <= 9:
+        second = "0{}".format((time.time() - start_time) % 60)
+    else:
+        second = (time.time() - start_time) % 60    
+
 while True:
     #  Start the stream and the time counter
     deb_switch1.update()
@@ -78,22 +96,18 @@ while True:
         start_time = time.time()
         text_label1.text = "{}:{}:{}".format(hour, minute, second)
         print("key 1 press")
-
+        
     deb_switch4.update()
     if deb_switch4.fell:
         start_time = time.time()
-        hour = (time.time() - start_time) // 3600
-        minute = (time.time() - start_time) // 60 % 60
-        second = (time.time() - start_time) % 60
+        timeupdate()
         text_label1.text = "{}:{}:{}".format(hour, minute, second)
         text_label2.text = "{}:{}:{}".format(hour, minute, second)
-
+    
     while start == 1:
-        hour = (time.time() - start_time) // 3600
-        minute = (time.time() - start_time) // 60 % 60
-        second = (time.time() - start_time) % 60
+        timeupdate()
         text_label1.text = "{}:{}:{}".format(hour, minute, second)
-
+    
         #  Stop the stream and reset the time counter
         deb_switch2.update()
         if deb_switch2.fell:
@@ -103,9 +117,7 @@ while True:
         #  Write current time to file
         deb_switch3.update()
         if deb_switch3.fell:
-            hour = (time.time() - start_time) // 3600
-            minute = (time.time() - start_time) // 60 % 60
-            second = (time.time() - start_time) % 60
+            timeupdate()
             text_label2.text = "{}:{}:{}".format(hour, minute, second)
             print(hour, minute, second, sep=":")
             #  with open("/Timestamps.txt", 'w') as f:
