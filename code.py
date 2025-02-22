@@ -103,6 +103,7 @@ while True:
         timeupdate()
         text_label1.text = "{}:{}:{}".format(hour, minute, second)
         text_label2.text = "{}:{}:{}".format(hour, minute, second)
+        print("key 4 press")
     
     while start == 1:
         timeupdate()
@@ -112,6 +113,9 @@ while True:
         deb_switch2.update()
         if deb_switch2.fell:
             start = 0
+            with open("/Timestamps.txt", 'a') as f:
+                f.write(str("Ended Stream @ {}:{}:{}\n".format(hour, minute, second)))
+                f.close()
             print("key 2 press")
 
         #  Write current time to file
@@ -120,7 +124,7 @@ while True:
             timeupdate()
             text_label2.text = "{}:{}:{}".format(hour, minute, second)
             print(hour, minute, second, sep=":")
-            #  with open("/Timestamps.txt", 'w') as f:
-                #  f.write(str("{}:{}:{}.  ".format(hour, minute, second)))
-                #  f.close()
+            with open("/Timestamps.txt", 'a') as f:
+                f.write(str("{}:{}:{}\n".format(hour, minute, second)))
+                f.close()
             print("key 3 press")
