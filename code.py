@@ -78,15 +78,16 @@ def timeupdate():
         hour = "0{}".format((time.time() - start_time) // 3600)
     else:
         hour = (time.time() - start_time) // 3600
-    if (time.time() - start_time) // 60 % 60 <= 0:
+        
+    if (time.time() - start_time) // 60 % 60 <= 9:
         minute = "0{}".format((time.time() - start_time) // 60 % 60)
     else:
         minute = (time.time() - start_time) // 60 % 60
-        
+
     if (time.time() - start_time) % 60 <= 9:
         second = "0{}".format((time.time() - start_time) % 60)
     else:
-        second = (time.time() - start_time) % 60    
+        second = (time.time() - start_time) % 60
 
 while True:
     #  Start the stream and the time counter
@@ -96,7 +97,7 @@ while True:
         start_time = time.time()
         text_label1.text = "{}:{}:{}".format(hour, minute, second)
         print("key 1 press")
-        
+
     deb_switch4.update()
     if deb_switch4.fell:
         start_time = time.time()
@@ -104,11 +105,11 @@ while True:
         text_label1.text = "{}:{}:{}".format(hour, minute, second)
         text_label2.text = "{}:{}:{}".format(hour, minute, second)
         print("key 4 press")
-    
+
     while start == 1:
         timeupdate()
         text_label1.text = "{}:{}:{}".format(hour, minute, second)
-    
+
         #  Stop the stream and reset the time counter
         deb_switch2.update()
         if deb_switch2.fell:
